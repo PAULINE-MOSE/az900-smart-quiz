@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AZ-900 Smart Quiz Builder (Unofficial)</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f6f7fb;--card:#fff;--tx:#1b1f2a;--mu:#5d6578;--bd:#dde1ec;--ac:#4f46e5;--ok:#15803d;--okb:#dcfce7;--no:#b91c1c;--nob:#fee2e2}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#12141c;--card:#1c1f2b;--tx:#eceef6;--mu:#a2a9bd;--bd:#2e3345;--ac:#8b85ff;--ok:#4ade80;--okb:#12301d;--no:#f87171;--nob:#3a1717}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#12141c;--card:#1c1f2b;--tx:#eceef6;--mu:#a2a9bd;--bd:#2e3345;--ac:#8b85ff;--ok:#4ade80;--okb:#12301d;--no:#f87171;--nob:#3a1717}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:680px;margin:0 auto;padding:16px}
+.banner{font-size:12px;color:var(--mu);border:1px dashed var(--bd);border-radius:8px;padding:6px 10px;margin-bottom:14px}
+h1{font-size:26px;margin:4px 0 6px}
+.sub{color:var(--mu);margin:0 0 18px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:12px}
+.topic{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;cursor:pointer;color:inherit;font:inherit}
+.topic:hover{border-color:var(--ac)}
+.topic b{display:block}.topic small{color:var(--mu)}
+.pill{background:var(--ac);color:#fff;border-radius:99px;padding:2px 10px;font-size:13px;white-space:nowrap}
+.bar{height:8px;background:var(--bd);border-radius:9px;overflow:hidden;margin:6px 0 14px}
+.bar i{display:block;height:100%;background:var(--ac);transition:width .3s}
+.meta{display:flex;justify-content:space-between;color:var(--mu);font-size:13px}
+.q{font-size:19px;font-weight:600;margin:8px 0 14px}
+.opt{display:block;width:100%;text-align:left;background:var(--card);color:inherit;font:inherit;border:2px solid var(--bd);border-radius:12px;padding:12px 14px;margin-bottom:10px;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--ac)}
+.opt.ok{border-color:var(--ok);background:var(--okb)}
+.opt.no{border-color:var(--no);background:var(--nob)}
+.opt:disabled{cursor:default}
+.fb{border-left:4px solid var(--ac);padding:10px 14px;margin:6px 0 14px;background:var(--card);border-radius:0 10px 10px 0;animation:pop .25s}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:12px 18px;font:inherit;font-weight:600;cursor:pointer}
+.btn.alt{background:transparent;color:var(--ac);border:2px solid var(--ac)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.score{font-size:48px;font-weight:700;text-align:center;margin:6px 0}
+.mi{margin:10px 0;padding-top:10px;border-top:1px solid var(--bd);font-size:15px}
+.mi small{color:var(--mu)}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+var T={cloud:"Cloud Concepts",arch:"Azure Architecture & Services",gov:"Management & Governance"};
+var Q=[
+{t:"cloud",q:"Your team rents virtual machines, then installs and patches the operating system and apps itself. The provider only runs the physical hardware. Which service model is this?",o:["IaaS","PaaS","SaaS","Serverless"],a:0,e:"With IaaS the provider supplies compute, storage and networking, while you manage the OS, runtime and apps. PaaS would hand OS patching to the provider; SaaS hands over nearly everything."},
+{t:"cloud",q:"In the shared responsibility model, which item stays the customer’s responsibility in every service model, including SaaS?",o:["Physical datacenter security","Information and data","Hypervisor patching","Physical network cabling"],a:1,e:"Whatever the model, you always own your data, accounts and identities. The provider always handles the physical datacenter, and the hypervisor and cabling are provider-side too."},
+{t:"cloud",q:"A company stops buying servers up front and pays a monthly bill for what it uses. How does its spending shift?",o:["OpEx to CapEx","CapEx to OpEx","Fixed cost to sunk cost","Variable cost to fixed cost"],a:1,e:"Buying hardware is capital expenditure (CapEx). Pay-as-you-go cloud is operational expenditure (OpEx): ongoing, usage-based costs with no big upfront purchase."},
+{t:"cloud",q:"A shop’s website automatically adds servers during a sale and removes them afterwards. Which cloud benefit is this?",o:["Elasticity","Fault tolerance","Geo-distribution","Predictability"],a:0,e:"Elasticity is scaling resources up and down automatically to match demand. Fault tolerance is about surviving failures, not matching load."},
+{t:"cloud",q:"An organization keeps sensitive records in its own datacenter but runs its public website in Azure. What is this deployment called?",o:["Public cloud","Private cloud","Hybrid cloud","Community cloud"],a:2,e:"Hybrid cloud combines on-premises or private infrastructure with a public cloud, letting workloads sit where they fit best."},
+{t:"cloud",q:"Which statement best describes the consumption-based pricing model?",o:["You pay a flat yearly fee for unlimited use","You pay only for the resources you actually use","You must prepay for hardware before deploying","Prices never change"],a:1,e:"Consumption-based means pay for what you use, with no upfront commitment, so unused capacity costs nothing."},
+{t:"arch",q:"What is an Availability Zone?",o:["A group of subscriptions","A physically separate datacenter location within a region, with independent power, cooling and networking","A pair of regions for disaster recovery","A virtual network boundary"],a:1,e:"Zones are separate datacenters inside one region, so a failure in one zone doesn’t take down the others. Region pairs are a different idea: two regions far apart."},
+{t:"arch",q:"You delete a resource group that holds a web app, a database and a storage account. What happens?",o:["Only the group’s label is removed","The resources inside it are deleted too","The resources move to the default group","The subscription is cancelled"],a:1,e:"A resource group is a logical container, and deleting it deletes every resource in it. Check contents first."},
+{t:"arch",q:"Which Azure storage option suits large amounts of unstructured data such as images and videos?",o:["Azure Files","Azure Table storage","Azure Blob storage","Azure Queue storage"],a:2,e:"Blob storage is object storage for unstructured data. Files offers SMB file shares, Table holds NoSQL key-value data, and Queue passes messages."},
+{t:"arch",q:"You need a private, dedicated connection between your office network and Azure that doesn’t travel over the public internet. Which service fits?",o:["Azure ExpressRoute","Azure DNS","Azure CDN","Azure Bastion"],a:0,e:"ExpressRoute uses a private connection through a connectivity provider. A VPN gateway is encrypted but still crosses the public internet."},
+{t:"arch",q:"Which service provides single sign-on and multifactor authentication for cloud apps?",o:["Azure Monitor","Microsoft Entra ID","Azure Policy","Azure Advisor"],a:1,e:"Microsoft Entra ID (formerly Azure Active Directory) is the cloud identity service handling sign-in, SSO and MFA."},
+{t:"arch",q:"You want to run a small piece of code only when a file is uploaded, without managing servers. Which service fits best?",o:["Azure Virtual Machines","Azure Functions","Azure Kubernetes Service","Azure Dedicated Host"],a:1,e:"Azure Functions is serverless and event-driven: code runs in response to triggers such as an upload, and you’re billed for execution."},
+{t:"gov",q:"You want to block anyone in your subscription from creating resources outside approved regions. Which tool enforces this?",o:["Azure Policy","Azure Advisor","Azure Monitor","Service Health"],a:0,e:"Azure Policy defines rules, such as allowed locations, and evaluates or enforces them on resources. Advisor only recommends."},
+{t:"gov",q:"A critical database must not be deleted by accident, even by users with edit rights. What should you apply?",o:["A tag","A CanNotDelete resource lock","A budget alert","A management group"],a:1,e:"A CanNotDelete lock lets users read and modify a resource but blocks deletion. Tags only label; budgets only alert."},
+{t:"gov",q:"Which tool gives personalized recommendations on cost, security, reliability and performance for your existing resources?",o:["Azure Advisor","Azure Pricing calculator","Azure Policy","Azure Arc"],a:0,e:"Azure Advisor analyzes your deployed resources and suggests improvements. The Pricing calculator estimates costs before you deploy."},
+{t:"gov",q:"Before migrating, you want to estimate the monthly cost of a planned Azure workload. Which tool should you use?",o:["Azure Advisor","Azure Monitor","Pricing calculator","Cost analysis"],a:2,e:"The Pricing calculator estimates costs for services you plan to use. Cost analysis reviews spending you’ve already incurred."},
+{t:"gov",q:"Which service collects and analyzes metrics and logs so you can spot performance problems and set alerts?",o:["Azure Monitor","Microsoft Defender for Cloud","Azure Blueprints","Azure Lighthouse"],a:0,e:"Azure Monitor gathers telemetry from resources and apps for dashboards, analysis and alerts."},
+{t:"gov",q:"A new hire only needs to restart virtual machines in one resource group. Following least privilege, what do you do?",o:["Make them subscription Owner","Assign a suitable role scoped to that resource group","Share your own credentials","Give them Global Administrator"],a:1,e:"Azure RBAC assigns roles at a scope. Granting a narrow role at the resource group gives only the access needed, which is least privilege."}
+];
+var app=document.getElementById("app"),S={},best={};
+try{best=JSON.parse(localStorage.getItem("az900best")||"{}")}catch(e){best={}}
+function save(k,v){if(!(best[k]>=v)){best[k]=v;try{localStorage.setItem("az900best",JSON.stringify(best))}catch(e){}}}
+function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=a[i];a[i]=a[j];a[j]=x}return a}
+var B='<div class="banner">Unofficial community practice tool. Original questions, not affiliated with or endorsed by Microsoft. Not real exam content.</div>';
+function home(){
+ var h=B+'<h1>AZ-900 Smart Quiz Builder</h1><p class="sub">Every answer comes with an explanation. Pick a topic to start.</p>';
+ var keys=["all","cloud","arch","gov"];
+ keys.forEach(function(k){var n=k=="all"?Q.length:Q.filter(function(x){return x.t==k}).length,nm=k=="all"?"Mixed: all topics":T[k];
+  h+='<button class="card topic" onclick="start(\''+k+'\')"><span><b>'+nm+'</b><small>'+n+' questions'+(best[k]!=null?' · best '+best[k]+'/'+n:'')+'</small></span><span class="pill">Start</span></button>'});
+ app.innerHTML=h}
+function start(k,list){
+ var pool=list||Q.filter(function(x){return k=="all"||x.t==k});
+ S={k:k,pool:shuf(pool),i:0,s:0,miss:[],done:false};ask()}
+function ask(){
+ var q=S.pool[S.i],opts=shuf(q.o.map(function(t,j){return{t:t,c:j==q.a}}));S.cur=opts;S.done=false;
+ var h=B+'<div class="meta"><span>'+T[q.t]+'</span><span>Question '+(S.i+1)+' of '+S.pool.length+'</span></div><div class="bar"><i style="width:'+(S.i/S.pool.length*100)+'%"></i></div><div class="q">'+q.q+'</div>';
+ opts.forEach(function(o,j){h+='<button class="opt" onclick="pick('+j+')">'+o.t+'</button>'});
+ h+='<div id="fb"></div>';app.innerHTML=h;window.scrollTo(0,0)}
+function pick(j){
+ if(S.done)return;S.done=true;var q=S.pool[S.i],ok=S.cur[j].c;
+ if(ok)S.s++;else S.miss.push(q);
+ var bs=app.querySelectorAll(".opt");
+ bs.forEach(function(b,n){b.disabled=true;if(S.cur[n].c)b.classList.add("ok");else if(n==j)b.classList.add("no")});
+ var last=S.i==S.pool.length-1;
+ document.getElementById("fb").innerHTML='<div class="fb"><b>'+(ok?"Correct! ":"Not quite. ")+'</b>'+q.e+'</div><button class="btn" onclick="next()">'+(last?"See results":"Next question")+'</button>';
+ document.getElementById("fb").scrollIntoView({behavior:"smooth",block:"nearest"})}
+function next(){S.i++;if(S.i>=S.pool.length)results();else ask()}
+function results(){
+ var n=S.pool.length,p=Math.round(S.s/n*100);save(S.k,S.s);
+ var msg=p>=80?"Exam-ready vibes!":p>=60?"Solid progress. Review the misses.":"Good start. Retry and read the explanations.";
+ var h=B+'<h1>Results</h1><div class="card"><div class="score">'+S.s+' / '+n+'</div><p class="sub" style="text-align:center">'+p+'% · '+msg+'</p></div>';
+ if(S.miss.length){h+='<div class="card"><b>Review your misses</b>';
+  S.miss.forEach(function(q){h+='<div class="mi"><small>'+T[q.t]+'</small><br>'+q.q+'<br><b>Answer:</b> '+q.o[q.a]+'<br><small>'+q.e+'</small></div>'});h+='</div>'}
+ h+='<div class="row">'+(S.miss.length?'<button class="btn" onclick="start(S.k,S.miss)">Retry missed ('+S.miss.length+')</button>':'')+'<button class="btn alt" onclick="start(S.k)">Restart topic</button><button class="btn alt" onclick="home()">All topics</button></div>';
+ app.innerHTML=h;window.scrollTo(0,0)}
+home();
+</script>
+</body>
+</html>
